@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Instagram</string>
+    <string name="logo">Logo</string>
+    <string name="login_email_adress">Login email adress</string>
+    <string name="e_mail">E-mail</string>
+    <string name="password_login">Password login</string>
+    <string name="password">Password</string>
+    <string name="button_login">Button login</string>
+    <string name="login">Login</string>
+    <string name="register_user">Register User</string>
+    <string name="register_here">Register here!</string>
+    <string name="name">Name</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="register">Register</string>
 </resources>

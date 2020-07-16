@@ -11,6 +11,7 @@ public class UserModel {
     private String photo;
 
     public UserModel() {
+        this.photo = "";
     }
 
 

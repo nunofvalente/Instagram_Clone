@@ -107,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void register(UserModel userModel) {
+    private void register(final UserModel userModel) {
 
         authentication.createUserWithEmailAndPassword(userModel.getEmail(), userModel.getPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -115,6 +115,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(RegisterActivity.this, "Registered with success", Toast.LENGTH_SHORT).show();
+                    UserFirebase.updateUserName(userModel.getName());
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 } else {
                     progressBar.setVisibility(View.GONE);

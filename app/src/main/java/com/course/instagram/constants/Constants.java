@@ -2,5 +2,13 @@ package com.course.instagram.constants;
 
 public class Constants {
 
-    public static String USERS = "users";
+    public final static String USERS = "users";
+    public final static String IMAGES = "images";
+    public final static String PROFILE_PIC = "profile";
+
+
+
+    public final static int GALLERY = 100;
+    public final static int CAMERA = 200;
+
 }

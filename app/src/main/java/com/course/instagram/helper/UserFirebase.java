@@ -1,5 +1,6 @@
 package com.course.instagram.helper;
 
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -15,8 +16,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 public class UserFirebase {
 
     public static String userEncodedEmail(UserModel userModel) {
-        String userEmail = Base64Custom.encodeEmail(userModel.getEmail());
-        return userEmail;
+        return Base64Custom.encodeEmail(userModel.getEmail());
     }
 
     public static UserModel getLoggedUserData() {
@@ -62,5 +62,32 @@ public class UserFirebase {
             return false;
         }
         return true;
+    }
+
+    public static Boolean updateUserPhoto(Uri url) {
+        FirebaseAuth authentication = FirebaseConfig.getFirebaseAuth();
+        FirebaseUser user= authentication.getCurrentUser();
+
+        try {
+            UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder().setPhotoUri(url).build();
+
+            user.updateProfile(profile).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()) {
+                        Log.d("Profile", "Error updating profile photo");
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static String getUserUID() {
+        FirebaseAuth authentication = FirebaseConfig.getFirebaseAuth();
+        return authentication.getCurrentUser().getUid();
     }
 }

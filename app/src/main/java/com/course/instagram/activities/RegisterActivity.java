@@ -44,6 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+
         //retrieve variables
         name = findViewById(R.id.editNameRegister);
         email = findViewById(R.id.editEmailRegister);
@@ -55,6 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
         //initialize variables
         database = FirebaseConfig.getFirebaseDb();
         authentication = FirebaseConfig.getFirebaseAuth();
+
 
 
         setListeners();

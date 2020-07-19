@@ -35,6 +35,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -113,16 +114,14 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void loadUserInformation() {
-        UserModel currentUser = UserFirebase.getLoggedUserData();
+        FirebaseUser currentUser = UserFirebase.getCurrentUser();
 
-        editProfileUserName.setText(currentUser.getName());
+        editProfileUserName.setText(currentUser.getDisplayName().toUpperCase());
         editProfileEmail.setText(currentUser.getEmail());
 
-        String photo = currentUser.getPhoto();
-        if (!photo.equals("")) {
-            Uri url = Uri.parse(photo);
-
-            Glide.with(getApplicationContext()).load(url).into(circleImageEditProfile);
+        Uri photo = currentUser.getPhotoUrl();
+        if (photo != null) {
+            Glide.with(getApplicationContext()).load(photo).into(circleImageEditProfile);
 
         } else {
             circleImageEditProfile.setImageResource(R.drawable.profile);

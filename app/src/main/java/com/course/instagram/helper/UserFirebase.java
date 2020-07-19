@@ -90,4 +90,9 @@ public class UserFirebase {
         FirebaseAuth authentication = FirebaseConfig.getFirebaseAuth();
         return authentication.getCurrentUser().getUid();
     }
+
+    public static FirebaseUser getCurrentUser() {
+        FirebaseAuth authentication = FirebaseConfig.getFirebaseAuth();
+        return authentication.getCurrentUser();
+    }
 }

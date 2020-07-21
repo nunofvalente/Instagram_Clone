@@ -1,5 +1,6 @@
 package com.course.instagram.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,15 +10,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.SearchView;
 
 import com.course.instagram.R;
+import com.course.instagram.activities.FriendProfileActivity;
 import com.course.instagram.adapter.SearchAdapter;
 import com.course.instagram.config.FirebaseConfig;
 import com.course.instagram.constants.Constants;
+import com.course.instagram.helper.RecyclerItemClickListener;
 import com.course.instagram.model.UserModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,7 +33,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchFragment extends Fragment { ;
+public class SearchFragment extends Fragment {
+    ;
 
     private SearchView searchViewUsers;
     private RecyclerView recyclerSearchFragment;
@@ -49,13 +55,13 @@ public class SearchFragment extends Fragment { ;
         //initialize variables
         searchViewUsers = view.findViewById(R.id.searchViewUsers);
         recyclerSearchFragment = view.findViewById(R.id.recyclerSearchFragment);
-        userList = new ArrayList();
+        userList = new ArrayList<>();
         userRef = FirebaseConfig.getFirebaseDb().child(Constants.USERS);
 
         configureSearchView();
         configureRecyclerView();
 
-
+        setListeners();
         return view;
     }
 
@@ -99,29 +105,51 @@ public class SearchFragment extends Fragment { ;
     private void searchUser(String text) {
         userList.clear();
 
-     if (text.length() >= 2) {
-         Query query = userRef.orderByChild("name")
-                 .startAt(text).endAt(text + "\uf8ff");
+        if (text.length() >= 2) {
+            Query query = userRef.orderByChild("name")
+                    .startAt(text).endAt(text + "\uf8ff");
 
-         query.addListenerForSingleValueEvent(new ValueEventListener() {
-             @Override
-             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                 userList.clear();
-                 for (DataSnapshot ds: snapshot.getChildren()) {
-                     userList.add(ds.getValue(UserModel.class));
-                 }
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    userList.clear();
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        userList.add(ds.getValue(UserModel.class));
+                    }
                     searchAdapter.notifyDataSetChanged();
                  /*int total = userList.size();
                  Log.i("totalUsers", "total:" + total);*/
-             }
+                }
 
-             @Override
-             public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-             }
-         });
-     }
+                }
+            });
+        }
+    }
 
+    private void setListeners() {
+        recyclerSearchFragment.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), recyclerSearchFragment, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                UserModel user = userList.get(position);
 
+                Intent intent = new Intent(getActivity(), FriendProfileActivity.class);
+                intent.putExtra("userSelected", user);
+                startActivity(intent);
+
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        }));
     }
 }

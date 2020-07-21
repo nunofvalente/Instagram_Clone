@@ -6,21 +6,47 @@ import com.course.instagram.helper.UserFirebase;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 
-public class UserModel {
+public class UserModel implements Serializable {
 
     private String id;
     private String name;
     private String email;
     private String password;
-    private String photo;
+    private String photo = "";
+    private Integer followers = 0;
+    private Integer posts = 0;
+    private Integer following = 0;
 
     public UserModel() {
-        this.photo = "";
     }
 
+    public Integer getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(Integer followers) {
+        this.followers = followers;
+    }
+
+    public Integer getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Integer posts) {
+        this.posts = posts;
+    }
+
+    public Integer getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(Integer following) {
+        this.following = following;
+    }
 
     public String getName() {
         return name;
@@ -82,7 +108,11 @@ public class UserModel {
 
        userMap.put("name", this.name);
        userMap.put("email", this.email);
+       userMap.put("id", this.id);
        userMap.put("photo", this.photo);
+       userMap.put("followers", this.followers);
+       userMap.put("following", this.following);
+       userMap.put("posts", this.posts);
 
         return userMap;
     }

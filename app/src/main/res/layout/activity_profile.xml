@@ -7,6 +7,7 @@
     android:orientation="vertical"
     tools:context=".activities.ProfileActivity"
     android:descendantFocusability="beforeDescendants"
+    android:background="@color/color_light_grey"
     android:focusableInTouchMode="true">
 
     <include

@@ -56,7 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="Posts"
+        android:text="@string/posts"
         android:textColor="@android:color/darker_gray"
         app:layout_constraintBottom_toTopOf="@+id/guideline9"
         app:layout_constraintStart_toStartOf="@+id/guideline7" />
@@ -66,9 +66,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="Followers"
+        android:text="@string/followers"
         android:textColor="@android:color/darker_gray"
-        app:layout_constraintBottom_toTopOf="@+id/buttonEditProfile"
+        app:layout_constraintBottom_toTopOf="@+id/buttonActionProfile"
         app:layout_constraintEnd_toStartOf="@+id/textView97"
         app:layout_constraintStart_toEndOf="@+id/textPosts" />
 
@@ -77,9 +77,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="Following"
+        android:text="@string/following"
         android:textColor="@android:color/darker_gray"
-        app:layout_constraintBottom_toTopOf="@+id/buttonEditProfile"
+        app:layout_constraintBottom_toTopOf="@+id/buttonActionProfile"
         app:layout_constraintEnd_toStartOf="@+id/guideline8" />
 
     <TextView
@@ -87,7 +87,7 @@
         android:layout_width="wrap_content"
         android:layout_height="22dp"
         android:layout_marginTop="16dp"
-        android:text="0"
+        android:text="@string/_0"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/textPosts"
@@ -101,7 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="22dp"
         android:layout_marginTop="16dp"
-        android:text="0"
+        android:text="@string/_0"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/textView99"
@@ -115,7 +115,7 @@
         android:layout_width="wrap_content"
         android:layout_height="22dp"
         android:layout_marginTop="16dp"
-        android:text="0"
+        android:text="@string/_0"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/textView97"
@@ -125,24 +125,25 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
-        android:id="@+id/buttonEditProfile"
+        android:id="@+id/buttonActionProfile"
         android:layout_width="0dp"
-        android:layout_height="18dp"
+        android:layout_height="20dp"
         android:background="@drawable/background_button_profile"
         android:gravity="center|center_vertical"
-        android:text="Edit Profile"
+        android:text="@string/edit_profile"
         android:textSize="12sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
         app:layout_constraintTop_toTopOf="@+id/guideline9" />
 
     <GridView
+        android:id="@+id/gridViewProfilePage"
         android:layout_width="300dp"
         android:layout_height="300dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonEditProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonActionProfile" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline9"

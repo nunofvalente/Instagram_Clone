@@ -36,7 +36,7 @@ public class ProfileFragment extends Fragment {
        View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
        //initialize variables
-        buttonEditProfile = view.findViewById(R.id.buttonEditProfile);
+        buttonEditProfile = view.findViewById(R.id.buttonActionProfile);
         circleImageProfile = view.findViewById(R.id.circleImageProfile);
         user = UserFirebase.getLoggedUserData();
 

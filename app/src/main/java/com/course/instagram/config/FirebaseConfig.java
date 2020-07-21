@@ -12,9 +12,7 @@ public class FirebaseConfig {
     private static FirebaseAuth authentication = FirebaseAuth.getInstance();
     private static StorageReference storage = FirebaseStorage.getInstance().getReference();
 
-    public static DatabaseReference getFirebaseDb() {
-        return database;
-    }
+    public static DatabaseReference getFirebaseDb() { return database; }
 
     public static FirebaseAuth getFirebaseAuth() {
         return authentication;

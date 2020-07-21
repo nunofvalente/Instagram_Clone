@@ -19,6 +19,13 @@ public class UserFirebase {
         return Base64Custom.encodeEmail(userModel.getEmail());
     }
 
+    public static String getCurrentUserId() {
+        FirebaseAuth authentication = FirebaseConfig.getFirebaseAuth();
+        FirebaseUser user = authentication.getCurrentUser();
+        assert user != null;
+        return Base64Custom.encodeEmail(user.getEmail());
+    }
+
     public static UserModel getLoggedUserData() {
         FirebaseAuth authentication = FirebaseConfig.getFirebaseAuth();
         FirebaseUser firebaseUser = authentication.getCurrentUser();
@@ -27,7 +34,7 @@ public class UserFirebase {
         if (authentication.getCurrentUser() != null) {
 
             String photo = "";
-            String name = firebaseUser.getDisplayName();
+            String name = firebaseUser.getDisplayName().toUpperCase();
             String email = firebaseUser.getEmail();
             if (firebaseUser.getPhotoUrl() != null) {
                 photo = firebaseUser.getPhotoUrl().toString();

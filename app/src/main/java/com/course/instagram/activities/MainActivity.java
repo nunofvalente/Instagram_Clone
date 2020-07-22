@@ -10,8 +10,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
 import com.course.instagram.R;
 import com.course.instagram.config.FirebaseConfig;
@@ -26,7 +24,6 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth authentication;
-    private Toolbar toolbarCustom;
     private BottomNavigationViewEx bottomNavigationViewEx;
 
     @Override
@@ -34,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbarCustom = findViewById(R.id.toolbarCustom);
+        Toolbar toolbarCustom = findViewById(R.id.toolbarCustom);
         toolbarCustom.setTitle("Instagram");
         setSupportActionBar(toolbarCustom);
 
@@ -110,13 +107,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.menu_logout:
-                signOut();
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
-                finish();
-            break;
+        if (item.getItemId() == R.id.menu_logout) {
+            signOut();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
 
         return super.onOptionsItemSelected(item);

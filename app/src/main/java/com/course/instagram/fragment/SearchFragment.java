@@ -23,6 +23,7 @@ import com.course.instagram.adapter.SearchAdapter;
 import com.course.instagram.config.FirebaseConfig;
 import com.course.instagram.constants.Constants;
 import com.course.instagram.helper.RecyclerItemClickListener;
+import com.course.instagram.helper.UserFirebase;
 import com.course.instagram.model.UserModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,6 +43,7 @@ public class SearchFragment extends Fragment {
     private List<UserModel> userList;
     private DatabaseReference userRef;
     private RecyclerView.Adapter searchAdapter;
+    private String idUserLogged;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -57,6 +59,7 @@ public class SearchFragment extends Fragment {
         recyclerSearchFragment = view.findViewById(R.id.recyclerSearchFragment);
         userList = new ArrayList<>();
         userRef = FirebaseConfig.getFirebaseDb().child(Constants.USERS);
+        idUserLogged = UserFirebase.getCurrentUserId();
 
         configureSearchView();
         configureRecyclerView();
@@ -113,8 +116,12 @@ public class SearchFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     userList.clear();
+                    UserModel userModel = snapshot.getValue(UserModel.class);
+
                     for (DataSnapshot ds : snapshot.getChildren()) {
-                        userList.add(ds.getValue(UserModel.class));
+                        if(idUserLogged.equals(userModel.getId())) continue;
+
+                            userList.add(ds.getValue(UserModel.class));
                     }
                     searchAdapter.notifyDataSetChanged();
                  /*int total = userList.size();

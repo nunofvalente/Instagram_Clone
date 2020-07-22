@@ -168,15 +168,12 @@ public class ProfileActivity extends AppCompatActivity {
 
             try {
 
-                switch (requestCode) {
-                    case Constants.GALLERY:
-                        Uri imagePath = null;
-                        if (data != null) {
-                            imagePath = data.getData();
-                        }
-                        image = MediaStore.Images.Media.getBitmap(getContentResolver(), imagePath);
-
-                        break;
+                if (requestCode == Constants.GALLERY) {
+                    Uri imagePath = null;
+                    if (data != null) {
+                        imagePath = data.getData();
+                    }
+                    image = MediaStore.Images.Media.getBitmap(getContentResolver(), imagePath);
                 }
 
                 if (image != null) {

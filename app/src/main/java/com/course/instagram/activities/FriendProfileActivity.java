@@ -6,7 +6,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,6 +21,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FriendProfileActivity extends AppCompatActivity {
@@ -31,11 +32,12 @@ public class FriendProfileActivity extends AppCompatActivity {
     private CircleImageView circleImageFriendProfile;
     private TextView textFriendFollowers, textFriendPosts, textFriendFollowing;
 
+    private UserModel userLogged;
     private String idUserLogged;
-    private DatabaseReference firebaseRef;
-    private DatabaseReference followersRef;
     private DatabaseReference userRef;
+    private DatabaseReference followersRef;
     private DatabaseReference userFriendRef;
+    private DatabaseReference userLoggedRef;
     private ValueEventListener valueEventListenerFriendProfile;
 
     @Override
@@ -45,33 +47,57 @@ public class FriendProfileActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbarCustom);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         toolbar.setNavigationIcon(R.drawable.ic_clear);
 
-        initializeComponents();
         recoverUser();
-        verifyIfFollowing();
+        initializeComponents();
 
     }
 
     private void initializeComponents() {
         buttonFollow = findViewById(R.id.buttonActionProfile);
-        buttonFollow.setText("Follow");
+        buttonFollow.setText(R.string.loading);
         circleImageFriendProfile = findViewById(R.id.circleImageProfile);
         textFriendFollowers = findViewById(R.id.textProfileFollowers);
         textFriendFollowing = findViewById(R.id.textProfileFollowing);
         textFriendPosts = findViewById(R.id.textProfilePosts);
-        firebaseRef = FirebaseConfig.getFirebaseDb();
+        DatabaseReference firebaseRef = FirebaseConfig.getFirebaseDb();
         userRef = firebaseRef.child(Constants.USERS);
         followersRef = firebaseRef.child(Constants.FOLLOWERS);
         idUserLogged = UserFirebase.getCurrentUserId();
+        userLoggedRef = userRef.child(idUserLogged);
+        userFriendRef = userRef.child(userSelected.getId());
+    }
+
+    public void recoverLoggedUserData() {
+        userLoggedRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //recover logged user data
+                userLogged = snapshot.getValue(UserModel.class);
+
+                /*Verify if the user is already following the friend after retrieving
+                logged user data*/
+                verifyIfFollowing();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public void recoverUser() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             userSelected = (UserModel) bundle.getSerializable("userSelected");
-            getSupportActionBar().setTitle(userSelected.getName());
+            if(getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(userSelected.getName());
+            }
         }
     }
 
@@ -85,7 +111,6 @@ public class FriendProfileActivity extends AppCompatActivity {
             circleImageFriendProfile.setImageResource(R.drawable.profile);
         }
 
-        userFriendRef = userRef.child(userSelected.getId());
         valueEventListenerFriendProfile = userFriendRef.addValueEventListener(new ValueEventListener() {
 
             @Override
@@ -140,28 +165,57 @@ public class FriendProfileActivity extends AppCompatActivity {
 
     private void enableButtonFollow(Boolean followUser) {
         if(followUser) {
-            buttonFollow.setText("Following");
+            buttonFollow.setText(R.string.following);
         } else {
-            buttonFollow.setText("Follow");
+            buttonFollow.setText(R.string.follow);
 
             buttonFollow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    followUser();
+                    followUser(userLogged, userSelected);
                 }
             });
 
         }
     }
 
-    private void followUser() {
-      //  DatabaseReference saveFolllower = followersRef.child(idUserLogged).child(userSelected.getId()).set
+    private void followUser(UserModel userLogged, UserModel userFriend) {
+        HashMap<String, Object> friendData = new HashMap<>();
+
+        friendData.put("name", userSelected.getName());
+        friendData.put("photo", userSelected.getPhoto());
+
+        followersRef.child(userLogged.getId())
+                .child(userFriend.getId())
+                .setValue(friendData);
+
+        //change button
+        buttonFollow.setText(R.string.following);
+        buttonFollow.setOnClickListener(null);
+
+        //increment following value from logged user
+        int following = userLogged.getFollowing() + 1;
+        HashMap<String, Object> userUpdatedData = new HashMap<>();
+        userUpdatedData.put("following", following);
+
+        userLoggedRef.updateChildren(userUpdatedData);
+
+        //increment followers from friend user
+        int followers = userSelected.getFollowers() + 1;
+        HashMap<String, Object> userFriendUpdatedData = new HashMap<>();
+        userFriendUpdatedData.put("followers", followers);
+
+        userRef.child(userSelected.getId()).updateChildren(userFriendUpdatedData);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        //recover data from Friend user
         loadUserInformation();
+
+        //recover data from logged user
+        recoverLoggedUserData();
     }
 
     @Override

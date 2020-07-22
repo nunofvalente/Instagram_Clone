@@ -22,7 +22,6 @@ public class UserFirebase {
     public static String getCurrentUserId() {
         FirebaseAuth authentication = FirebaseConfig.getFirebaseAuth();
         FirebaseUser user = authentication.getCurrentUser();
-        assert user != null;
         return Base64Custom.encodeEmail(user.getEmail());
     }
 

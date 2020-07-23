@@ -22,4 +22,7 @@
     <string name="posts">Posts</string>
     <string name="_0">0</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="open_gallery">Open Gallery</string>
+    <string name="open_camera">Open Camera</string>
+    <string name="filters">Filters</string>
 </resources>

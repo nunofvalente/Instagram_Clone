@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.course.instagram">
 
+    <uses-feature
+        android:name="android.hardware.camera2"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -11,8 +16,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".activities.FriendProfileActivity" android:parentActivityName=".activities.MainActivity"/>
+        android:theme="@style/AppTheme"
+        android:largeHeap="true">
+        <activity
+            android:name=".activities.FilterActivity"
+            android:parentActivityName=".activities.MainActivity"/>
+        <activity
+            android:name=".activities.FriendProfileActivity"
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.ProfileActivity"
             android:parentActivityName=".activities.MainActivity" />

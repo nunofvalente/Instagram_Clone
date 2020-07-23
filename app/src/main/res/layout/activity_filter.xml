@@ -18,7 +18,7 @@
         <ImageView
             android:id="@+id/imagePhotoSelected"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="450dp"
             android:layout_gravity="center"
             android:layout_marginBottom="5dp"
             android:scaleType="centerCrop"
@@ -36,6 +36,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

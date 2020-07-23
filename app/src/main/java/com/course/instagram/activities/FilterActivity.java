@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -19,6 +22,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.course.instagram.R;
+import com.course.instagram.adapter.FilterAdapter;
 import com.zomato.photofilters.FilterPack;
 import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.utils.ThumbnailItem;
@@ -38,6 +42,9 @@ public class FilterActivity extends AppCompatActivity {
     private Bitmap imageFilter;
     private List<ThumbnailItem> filterList;
 
+    private RecyclerView recyclerFilter;
+    private FilterAdapter filterAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,9 +62,22 @@ public class FilterActivity extends AppCompatActivity {
 
 
         recoverSelectedPhoto();
+        configureRecyclerView();
+    }
+
+    private void configureRecyclerView() {
+
+        filterAdapter = new FilterAdapter(filterList, getApplicationContext());
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerFilter.setLayoutManager(layoutManager);
+        recyclerFilter.setAdapter(filterAdapter);
+        recyclerFilter.setHasFixedSize(true);
+
     }
 
     private void recoverFilters() {
+        ThumbnailsManager.clearThumbs();
         filterList.clear();
 
         ThumbnailItem item = new ThumbnailItem();
@@ -75,6 +95,7 @@ public class FilterActivity extends AppCompatActivity {
             ThumbnailsManager.addThumb(itemFilter);
         }
         filterList.addAll(ThumbnailsManager.processThumbs(getApplicationContext()));
+        filterAdapter.notifyDataSetChanged();
 
     }
 
@@ -106,6 +127,7 @@ public class FilterActivity extends AppCompatActivity {
 
                     image = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
                     imageSelected.setImageBitmap(image);
+                    recyclerFilter = findViewById(R.id.recyclerFilter);
 
                     //recoverFilters
                     recoverFilters();

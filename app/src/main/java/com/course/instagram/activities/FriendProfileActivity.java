@@ -72,6 +72,10 @@ public class FriendProfileActivity extends AppCompatActivity {
         userFriendRef = userRef.child(userSelected.getId());
     }
 
+    public void loadPostPhotos() {
+
+    }
+
     public void recoverLoggedUserData() {
         userLoggedRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

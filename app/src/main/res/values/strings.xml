@@ -25,4 +25,5 @@
     <string name="open_gallery">Open Gallery</string>
     <string name="open_camera">Open Camera</string>
     <string name="filters">Filters</string>
+    <string name="grid_photo">grid photo</string>
 </resources>

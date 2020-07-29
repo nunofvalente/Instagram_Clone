@@ -7,21 +7,28 @@ import androidx.appcompat.widget.Toolbar;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.Button;
+import android.widget.GridView;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.course.instagram.R;
+import com.course.instagram.adapter.GridAdapter;
 import com.course.instagram.config.FirebaseConfig;
 import com.course.instagram.constants.Constants;
 import com.course.instagram.helper.UserFirebase;
+import com.course.instagram.model.PostModel;
 import com.course.instagram.model.UserModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -31,6 +38,8 @@ public class FriendProfileActivity extends AppCompatActivity {
     private Button buttonFollow;
     private CircleImageView circleImageFriendProfile;
     private TextView textFriendFollowers, textFriendPosts, textFriendFollowing;
+    private GridView gridViewPhotos;
+    private ListAdapter adapterGrid;
 
     private UserModel userLogged;
     private String idUserLogged;
@@ -38,6 +47,7 @@ public class FriendProfileActivity extends AppCompatActivity {
     private DatabaseReference followersRef;
     private DatabaseReference userFriendRef;
     private DatabaseReference userLoggedRef;
+    private DatabaseReference postUserRef;
     private ValueEventListener valueEventListenerFriendProfile;
 
     @Override
@@ -64,6 +74,8 @@ public class FriendProfileActivity extends AppCompatActivity {
         textFriendFollowers = findViewById(R.id.textProfileFollowers);
         textFriendFollowing = findViewById(R.id.textProfileFollowing);
         textFriendPosts = findViewById(R.id.textProfilePosts);
+        gridViewPhotos = findViewById(R.id.gridViewProfilePage);
+
         DatabaseReference firebaseRef = FirebaseConfig.getFirebaseDb();
         userRef = firebaseRef.child(Constants.USERS);
         followersRef = firebaseRef.child(Constants.FOLLOWERS);
@@ -74,6 +86,30 @@ public class FriendProfileActivity extends AppCompatActivity {
 
     public void loadPostPhotos() {
 
+        final List<String> urlPhotos = new ArrayList<>();
+
+        urlPhotos.clear();
+
+        postUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot ds: snapshot.getChildren()) {
+                    PostModel post = ds.getValue(PostModel.class);
+                    urlPhotos.add(post.getPhotoPath());
+                }
+                int postQuantity = urlPhotos.size();
+                textFriendPosts.setText(String.valueOf(postQuantity));
+
+                //configure adapter
+                adapterGrid = new GridAdapter(getApplicationContext(),R.layout.grid_posts, urlPhotos);
+                gridViewPhotos.setAdapter(adapterGrid);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public void recoverLoggedUserData() {
@@ -101,8 +137,14 @@ public class FriendProfileActivity extends AppCompatActivity {
             userSelected = (UserModel) bundle.getSerializable("userSelected");
             if(getSupportActionBar() != null) {
                 getSupportActionBar().setTitle(userSelected.getName());
+
+                postUserRef = FirebaseConfig.getFirebaseDb()
+                        .child(Constants.POSTS)
+                        .child(userSelected.getId());
             }
         }
+
+        loadPostPhotos();
     }
 
     private void loadUserInformation() {
@@ -125,11 +167,11 @@ public class FriendProfileActivity extends AppCompatActivity {
                 assert userModel != null;
                 String followers = String.valueOf(userModel.getFollowers());
                 String following = String.valueOf(userModel.getFollowing());
-                String posts = String.valueOf(userModel.getPosts());
+               // String posts = String.valueOf(userModel.getPosts());
 
                 textFriendFollowers.setText(followers);
                 textFriendFollowing.setText(following);
-                textFriendPosts.setText(posts);
+              //  textFriendPosts.setText(posts);
 
             }
 

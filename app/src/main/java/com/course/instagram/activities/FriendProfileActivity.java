@@ -25,6 +25,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
+import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,9 +67,10 @@ public class FriendProfileActivity extends AppCompatActivity {
         }
         toolbar.setNavigationIcon(R.drawable.ic_clear);
 
-        recoverUser();
         initializeComponents();
+        recoverUser();
 
+        userFriendRef = userRef.child(userSelected.getId());
     }
 
     private void initializeComponents() {
@@ -81,10 +87,21 @@ public class FriendProfileActivity extends AppCompatActivity {
         followersRef = firebaseRef.child(Constants.FOLLOWERS);
         idUserLogged = UserFirebase.getCurrentUserId();
         userLoggedRef = userRef.child(idUserLogged);
-        userFriendRef = userRef.child(userSelected.getId());
     }
 
-    public void loadPostPhotos() {
+    private void initializeImageLoader() {
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration
+                .Builder(this)
+                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
+                .memoryCacheSize(2 * 1024 * 1024)
+                .diskCacheSize(50 * 1024 * 1024)
+                .diskCacheFileCount(100)
+                .diskCacheFileNameGenerator(new HashCodeFileNameGenerator())
+                .build();
+        ImageLoader.getInstance().init(config);
+    }
+
+    private void loadPostPhotos() {
 
         final List<String> urlPhotos = new ArrayList<>();
 
@@ -93,6 +110,12 @@ public class FriendProfileActivity extends AppCompatActivity {
         postUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                //grid size
+                int gridSize = getResources().getDisplayMetrics().widthPixels;
+                int imageSize = gridSize/3;
+                gridViewPhotos.setColumnWidth(imageSize);
+
                 for(DataSnapshot ds: snapshot.getChildren()) {
                     PostModel post = ds.getValue(PostModel.class);
                     urlPhotos.add(post.getPhotoPath());
@@ -143,7 +166,7 @@ public class FriendProfileActivity extends AppCompatActivity {
                         .child(userSelected.getId());
             }
         }
-
+        initializeImageLoader();
         loadPostPhotos();
     }
 

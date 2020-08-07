@@ -4,10 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListAdapter;
@@ -25,7 +26,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -45,6 +45,7 @@ public class FriendProfileActivity extends AppCompatActivity {
     private TextView textFriendFollowers, textFriendPosts, textFriendFollowing;
     private GridView gridViewPhotos;
     private ListAdapter adapterGrid;
+    private List<PostModel> postsList;
 
     private UserModel userLogged;
     private String idUserLogged;
@@ -62,15 +63,29 @@ public class FriendProfileActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbarCustom);
         setSupportActionBar(toolbar);
-        if(getSupportActionBar() != null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         toolbar.setNavigationIcon(R.drawable.ic_clear);
 
         initializeComponents();
         recoverUser();
+        setListeners();
 
         userFriendRef = userRef.child(userSelected.getId());
+    }
+
+    private void setListeners() {
+        gridViewPhotos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                PostModel post = postsList.get(position);
+
+                Intent intent = new Intent(getApplicationContext(), PostActivity.class);
+                intent.putExtra("postSelected", post);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initializeComponents() {
@@ -104,7 +119,9 @@ public class FriendProfileActivity extends AppCompatActivity {
     private void loadPostPhotos() {
 
         final List<String> urlPhotos = new ArrayList<>();
+        postsList = new ArrayList<>();
 
+        postsList.clear();
         urlPhotos.clear();
 
         postUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -113,18 +130,17 @@ public class FriendProfileActivity extends AppCompatActivity {
 
                 //grid size
                 int gridSize = getResources().getDisplayMetrics().widthPixels;
-                int imageSize = gridSize/3;
+                int imageSize = gridSize / 3;
                 gridViewPhotos.setColumnWidth(imageSize);
 
-                for(DataSnapshot ds: snapshot.getChildren()) {
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     PostModel post = ds.getValue(PostModel.class);
+                    postsList.add(post);
                     urlPhotos.add(post.getPhotoPath());
                 }
-                int postQuantity = urlPhotos.size();
-                textFriendPosts.setText(String.valueOf(postQuantity));
 
                 //configure adapter
-                adapterGrid = new GridAdapter(getApplicationContext(),R.layout.grid_posts, urlPhotos);
+                adapterGrid = new GridAdapter(getApplicationContext(), R.layout.grid_posts, urlPhotos);
                 gridViewPhotos.setAdapter(adapterGrid);
             }
 
@@ -158,7 +174,7 @@ public class FriendProfileActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             userSelected = (UserModel) bundle.getSerializable("userSelected");
-            if(getSupportActionBar() != null) {
+            if (getSupportActionBar() != null) {
                 getSupportActionBar().setTitle(userSelected.getName());
 
                 postUserRef = FirebaseConfig.getFirebaseDb()
@@ -185,16 +201,16 @@ public class FriendProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                UserModel userModel = snapshot.getValue(UserModel.class);
+                UserModel user = snapshot.getValue(UserModel.class);
 
-                assert userModel != null;
-                String followers = String.valueOf(userModel.getFollowers());
-                String following = String.valueOf(userModel.getFollowing());
-               // String posts = String.valueOf(userModel.getPosts());
+                assert user != null;
+                String followers = String.valueOf(user.getFollowers());
+                String following = String.valueOf(user.getFollowing());
+                String posts = String.valueOf(user.getPosts());
 
                 textFriendFollowers.setText(followers);
                 textFriendFollowing.setText(following);
-              //  textFriendPosts.setText(posts);
+                textFriendPosts.setText(posts);
 
             }
 
@@ -233,7 +249,7 @@ public class FriendProfileActivity extends AppCompatActivity {
     }
 
     private void enableButtonFollow(Boolean followUser) {
-        if(followUser) {
+        if (followUser) {
             buttonFollow.setText(R.string.following);
         } else {
             buttonFollow.setText(R.string.follow);

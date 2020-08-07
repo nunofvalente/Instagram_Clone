@@ -103,6 +103,19 @@ public class UserModel implements Serializable {
 
     }
 
+    public void updatePost() {
+        DatabaseReference database = FirebaseConfig.getFirebaseDb();
+        UserModel user = UserFirebase.getLoggedUserData();
+        String userId = UserFirebase.userEncodedEmail(user);
+
+        DatabaseReference path = database.child(Constants.USERS).child(userId);
+
+        HashMap<String, Object> userMap = new HashMap<>();
+        userMap.put("posts", this.posts);
+
+        path.updateChildren(userMap);
+    }
+
     private HashMap<String, Object> convertToMap() {
        HashMap<String, Object> userMap = new HashMap<>();
 

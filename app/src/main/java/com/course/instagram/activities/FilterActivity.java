@@ -1,6 +1,7 @@
 package com.course.instagram.activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -59,8 +60,7 @@ public class FilterActivity extends AppCompatActivity {
     private TextInputEditText textDescription;
     private String userId;
     private UserModel userLogged;
-    private ProgressBar progressBar;
-    private Boolean isLoading;
+    private AlertDialog dialog;
 
     private DatabaseReference userRef;
     private DatabaseReference userLoggedRef;
@@ -87,7 +87,6 @@ public class FilterActivity extends AppCompatActivity {
         textDescription = findViewById(R.id.textDescription);
         imageSelected = findViewById(R.id.imagePhotoSelected);
         recyclerFilter = findViewById(R.id.recyclerFilter);
-        progressBar = findViewById(R.id.progressFilter);
 
         configureToolbar();
         recoverSelectedPhoto();
@@ -96,25 +95,26 @@ public class FilterActivity extends AppCompatActivity {
         setRecyclerListeners();
     }
 
-    private void loading(Boolean state) {
 
-        if(state) {
-            isLoading = true;
-            progressBar.setVisibility(View.VISIBLE);
-        } else {
-            isLoading = false;
-            progressBar.setVisibility(View.GONE);
-        }
+    private void openLoadingDialog(String title) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle(title);
+        alert.setCancelable(false);
+        alert.setView(R.layout.loading);
+
+        dialog = alert.create();
+        dialog.show();
     }
 
     private void recoverLoggedUserData() {
+
+        openLoadingDialog("Loading data, please wait!");
         userLoggedRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //recover logged user data
                 userLogged = snapshot.getValue(UserModel.class);
-                loading(false);
-
+                dialog.cancel();
             }
 
             @Override
@@ -201,9 +201,8 @@ public class FilterActivity extends AppCompatActivity {
 
     private void publishPhoto() {
 
-        if (isLoading) {
-            Toast.makeText(getApplicationContext(), "Loading, please wait!", Toast.LENGTH_SHORT).show();
-        } else {
+            openLoadingDialog("Saving post, please wait!");
+
             final PostModel post = new PostModel();
             post.setUserId(userId);
             post.setDescription(textDescription.getText().toString());
@@ -240,6 +239,7 @@ public class FilterActivity extends AppCompatActivity {
                                 userLogged.updatePost();
 
                                 Toast.makeText(getApplicationContext(), "Success saving image!", Toast.LENGTH_SHORT).show();
+                                dialog.cancel();
                                 finish();
                             }
                         }
@@ -247,7 +247,6 @@ public class FilterActivity extends AppCompatActivity {
                 }
             });
         }
-    }
 
             @Override
             public boolean onCreateOptionsMenu(Menu menu) {

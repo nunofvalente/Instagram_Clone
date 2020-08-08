@@ -189,7 +189,7 @@ public class ProfileActivity extends AppCompatActivity {
                     StorageReference storage = FirebaseConfig.getFirebaseStorage();
                     final StorageReference imageRef = storage.child(Constants.IMAGES)
                             .child(Constants.PROFILE_PIC)
-                            .child(UserFirebase.getUserUID())
+                            .child(UserFirebase.getCurrentUserId())
                             .child("profile.jpeg");
 
                     UploadTask uploadTask = imageRef.putBytes(imageData);

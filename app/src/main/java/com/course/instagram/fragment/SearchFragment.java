@@ -117,11 +117,12 @@ public class SearchFragment extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     userList.clear();
                     UserModel userModel = snapshot.getValue(UserModel.class);
+                    String id = userModel.getId();
 
                     for (DataSnapshot ds : snapshot.getChildren()) {
-                        if(idUserLogged.equals(userModel.getId())) continue;
+                        if(idUserLogged.equals(id)) continue;
 
-                            userList.add(ds.getValue(UserModel.class));
+                        userList.add(ds.getValue(UserModel.class));
                     }
                     searchAdapter.notifyDataSetChanged();
                  /*int total = userList.size();

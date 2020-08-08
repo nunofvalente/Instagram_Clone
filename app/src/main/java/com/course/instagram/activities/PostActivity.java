@@ -31,6 +31,7 @@ public class PostActivity extends AppCompatActivity {
     private UserModel selectedUser;
     private String selectedUserId;
     private PostModel selectedPost;
+    private TextView textDescription;
 
     private DatabaseReference database;
 
@@ -49,6 +50,7 @@ public class PostActivity extends AppCompatActivity {
         textUserNamePost = findViewById(R.id.textUserNamePost);
         circleImageUserPost = findViewById(R.id.circleViewPost);
         imagePost = findViewById(R.id.imageViewPostActivity);
+        textDescription = findViewById(R.id.textPostDescription);
 
         database = FirebaseConfig.getFirebaseDb();
     }
@@ -76,6 +78,11 @@ public class PostActivity extends AppCompatActivity {
             Glide.with(this).load(urlPhotoPost).into(imagePost);
 
             selectedUserId = selectedPost.getUserId();
+
+            String description = selectedPost.getDescription();
+            textDescription.setText(description);
+
+            //Add Likes
         }
     }
 
@@ -86,11 +93,11 @@ public class PostActivity extends AppCompatActivity {
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                UserModel userModel = snapshot.getValue(UserModel.class);
+                selectedUser = snapshot.getValue(UserModel.class);
 
-                assert userModel != null;
-                String name = userModel.getName();
-                String photo = userModel.getPhoto();
+                assert selectedUser != null;
+                String name = selectedUser.getName();
+                String photo = selectedUser.getPhoto();
 
                 textUserNamePost.setText(name);
 

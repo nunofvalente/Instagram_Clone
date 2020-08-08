@@ -229,8 +229,8 @@ public class FriendProfileActivity extends AppCompatActivity {
 
     private void verifyIfFollowing() {
         DatabaseReference followerRef = followersRef
-                .child(idUserLogged)
-                .child(userSelected.getId());
+                .child(userSelected.getId())
+                .child(idUserLogged);
         followerRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -265,14 +265,14 @@ public class FriendProfileActivity extends AppCompatActivity {
     }
 
     private void followUser(UserModel userLogged, UserModel userFriend) {
-        HashMap<String, Object> friendData = new HashMap<>();
+        HashMap<String, Object> loggedUserData = new HashMap<>();
 
-        friendData.put("name", userSelected.getName());
-        friendData.put("photo", userSelected.getPhoto());
+        loggedUserData.put("name", userLogged.getName());
+        loggedUserData.put("photo", userLogged.getPhoto());
 
-        followersRef.child(userLogged.getId())
-                .child(userFriend.getId())
-                .setValue(friendData);
+        followersRef.child(userFriend.getId())
+                .child(userLogged.getId())
+                .setValue(loggedUserData);
 
         //change button
         buttonFollow.setText(R.string.following);

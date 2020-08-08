@@ -121,7 +121,6 @@ public class UserModel implements Serializable {
 
        userMap.put("name", this.name);
        userMap.put("email", this.email);
-       userMap.put("id", this.id);
        userMap.put("photo", this.photo);
        userMap.put("followers", this.followers);
        userMap.put("following", this.following);

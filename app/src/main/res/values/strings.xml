@@ -27,6 +27,6 @@
     <string name="filters">Filters</string>
     <string name="grid_photo">grid photo</string>
     <string name="user_name">USER NAME</string>
-    <string name="_0_likes">0 Likes!</string>
+    <string name="_0_likes">0 Likes</string>
     <string name="description">Description</string>
 </resources>

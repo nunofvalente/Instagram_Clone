@@ -66,6 +66,7 @@ public class FilterActivity extends AppCompatActivity {
     private DatabaseReference userLoggedRef;
     private StorageReference storage;
     private DatabaseReference database;
+    private DataSnapshot followersSnapshot;
     private RecyclerView recyclerFilter;
     private FilterAdapter filterAdapter;
 
@@ -90,7 +91,7 @@ public class FilterActivity extends AppCompatActivity {
 
         configureToolbar();
         recoverSelectedPhoto();
-        recoverLoggedUserData();
+        recoverPostData();
         configureRecyclerView();
         setRecyclerListeners();
     }
@@ -106,7 +107,7 @@ public class FilterActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void recoverLoggedUserData() {
+    private void recoverPostData() {
 
         openLoadingDialog("Loading data, please wait!");
         userLoggedRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -114,6 +115,23 @@ public class FilterActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //recover logged user data
                 userLogged = snapshot.getValue(UserModel.class);
+
+                //recover followers
+                DatabaseReference followersRef = database.child(Constants.FOLLOWERS).child(userId);
+                followersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        followersSnapshot = snapshot;
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
+
                 dialog.cancel();
             }
 
@@ -209,7 +227,7 @@ public class FilterActivity extends AppCompatActivity {
 
             //recover image data from firebase
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            imageFilter.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+            imageFilter.compress(Bitmap.CompressFormat.JPEG, 60, baos);
             byte[] imageData = baos.toByteArray();
 
             //save image in Storage
@@ -232,11 +250,13 @@ public class FilterActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Uri uri) {
                             post.setPhotoPath(uri.toString());
-                            if (post.save()) {
-                                //update post quantity
-                                int postQtt = userLogged.getPosts() + 1;
-                                userLogged.setPosts(postQtt);
-                                userLogged.updatePost();
+
+                            //update post quantity
+                            int postQtt = userLogged.getPosts() + 1;
+                            userLogged.setPosts(postQtt);
+                            userLogged.updatePost();
+
+                            if (post.save(followersSnapshot)) {
 
                                 Toast.makeText(getApplicationContext(), "Success saving image!", Toast.LENGTH_SHORT).show();
                                 dialog.cancel();
@@ -279,6 +299,6 @@ public class FilterActivity extends AppCompatActivity {
             @Override
             public boolean onSupportNavigateUp() {
                 finish();
-                return super.onSupportNavigateUp();
+                return true;
             }
         }

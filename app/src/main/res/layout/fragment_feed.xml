@@ -6,12 +6,9 @@
     tools:context=".fragment.FeedFragment"
     android:background="@color/color_light_grey">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerFeed"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:text="Feed" />
-
+        android:layout_margin="8dp"/>
 </FrameLayout>

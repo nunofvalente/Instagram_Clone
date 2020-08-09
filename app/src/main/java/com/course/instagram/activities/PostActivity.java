@@ -47,10 +47,10 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private void initializeComponents() {
-        textUserNamePost = findViewById(R.id.textUserNamePost);
-        circleImageUserPost = findViewById(R.id.circleViewPost);
-        imagePost = findViewById(R.id.imageViewPostActivity);
-        textDescription = findViewById(R.id.textPostDescription);
+        textUserNamePost = findViewById(R.id.textNameFeedAdapter);
+        circleImageUserPost = findViewById(R.id.circleImageFeedAdapter);
+        imagePost = findViewById(R.id.squareImageFeed);
+        textDescription = findViewById(R.id.textDescriptionFeed);
 
         database = FirebaseConfig.getFirebaseDb();
     }

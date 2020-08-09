@@ -29,4 +29,5 @@
     <string name="user_name">USER NAME</string>
     <string name="_0_likes">0 Likes</string>
     <string name="description">Description</string>
+    <string name="feed_image">Feed Image</string>
 </resources>

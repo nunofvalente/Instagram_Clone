@@ -7,6 +7,7 @@ public class Constants {
     public final static String FOLLOWERS = "followers";
     public final static String IMAGES = "images";
     public final static String PROFILE_PIC = "profile";
+    public final static String FEED = "feed";
 
 
 

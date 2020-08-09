@@ -2,7 +2,7 @@ package com.course.instagram.model;
 
 public class FeedModel {
 
-    private String id;
+    private String postId;
     private String postPhoto;
     private String description;
     private String userName;
@@ -11,12 +11,12 @@ public class FeedModel {
     public FeedModel() {
     }
 
-    public String getId() {
-        return id;
+    public String getPostId() {
+        return postId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setPostId(String id) {
+        this.postId = id;
     }
 
     public String getPostPhoto() {

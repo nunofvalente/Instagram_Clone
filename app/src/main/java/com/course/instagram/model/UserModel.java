@@ -8,6 +8,7 @@ import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class UserModel implements Serializable {
@@ -92,14 +93,12 @@ public class UserModel implements Serializable {
     public void updateUser() {
 
         DatabaseReference database = FirebaseConfig.getFirebaseDb();
-        UserModel user = UserFirebase.getLoggedUserData();
-        String userId = UserFirebase.userEncodedEmail(user);
 
-        DatabaseReference path = database.child(Constants.USERS).child(userId);
+        Map<String, Object> object = new HashMap<>();
+        object.put("/users/" + getId() + "/name", getName());
+        object.put("/users/" + getId() + "/photo", getPhoto());
 
-        HashMap<String, Object> userValues = convertToMap();
-
-        path.updateChildren(userValues);
+        database.updateChildren(object);
 
     }
 

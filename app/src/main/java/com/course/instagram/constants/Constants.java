@@ -8,6 +8,8 @@ public class Constants {
     public final static String IMAGES = "images";
     public final static String PROFILE_PIC = "profile";
     public final static String FEED = "feed";
+    public final static String POSTS_LIKES = "posts-likes";
+    public final static String COMMENTS = "comments";
 
 
 

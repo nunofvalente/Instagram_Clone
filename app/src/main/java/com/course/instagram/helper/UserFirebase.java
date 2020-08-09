@@ -38,7 +38,7 @@ public class UserFirebase {
             if (firebaseUser.getPhotoUrl() != null) {
                 photo = firebaseUser.getPhotoUrl().toString();
             }
-
+            currentUser.setId(getCurrentUserId());
             currentUser.setName(name);
             currentUser.setEmail(email);
             currentUser.setPhoto(photo);

@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.renderscript.Sampler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +36,7 @@ public class FeedFragment extends Fragment {
     private ValueEventListener valueEventListener;
     private DatabaseReference feedRef;
     private String idLoggedUser;
+    private LikeButton buttonLike;
 
 
     public FeedFragment() {
@@ -64,6 +66,7 @@ public class FeedFragment extends Fragment {
 
     private void initializeComponents(View view) {
         recyclerFeed = view.findViewById(R.id.recyclerFeed);
+        buttonLike = view.findViewById(R.id.buttonLikeFeed);
 
         idLoggedUser = UserFirebase.getCurrentUserId();
         feedRef = FirebaseConfig.getFirebaseDb()
@@ -92,6 +95,7 @@ public class FeedFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        feedList.clear();
         listingFeed();
         configureRecyclerView();
     }

@@ -82,7 +82,6 @@ public class ProfileActivity extends AppCompatActivity {
         //validate permissions
         Permission.validatePermission(permissionNeeded, this, 1);
 
-        loadUserInformation();
         setListeners();
 
     }
@@ -247,5 +246,11 @@ public class ProfileActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return false;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loadUserInformation();
     }
 }

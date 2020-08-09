@@ -234,7 +234,7 @@ public class FilterActivity extends AppCompatActivity {
             final StorageReference imageRef = storage
                     .child("images")
                     .child("posts")
-                    .child(post.getId() + ".jpeg");
+                    .child(post.getPostId() + ".jpeg");
 
             UploadTask uploadTask = imageRef.putBytes(imageData);
             uploadTask.addOnFailureListener(new OnFailureListener() {

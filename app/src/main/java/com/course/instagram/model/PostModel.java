@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class PostModel implements Serializable {
 
-    private String id;
+    private String postId;
     private String description;
     private String photoPath;
     private String userId;
@@ -21,8 +21,8 @@ public class PostModel implements Serializable {
     public PostModel() {
         DatabaseReference firebaseRef = FirebaseConfig.getFirebaseDb();
         DatabaseReference postRef = firebaseRef.child(Constants.POSTS);
-        String postId = postRef.push().getKey();
-        setId(postId);
+        String postIds = postRef.push().getKey();
+        setPostId(postIds);
 
     }
 
@@ -32,7 +32,7 @@ public class PostModel implements Serializable {
         DatabaseReference firebaseRef = FirebaseConfig.getFirebaseDb();
 
         //Ref for posting
-        String idComb = "/" + getUserId() + "/" + getId();
+        String idComb = "/" + getUserId() + "/" + getPostId();
         object.put("/posts" + idComb, this);
 
         //Ref for posting for feed
@@ -43,11 +43,11 @@ public class PostModel implements Serializable {
             HashMap<String, Object> followerData = new HashMap<>();
             followerData.put("postPhoto", getPhotoPath());
             followerData.put("description", getDescription());
-            followerData.put("id", getId());
+            followerData.put("postId", getPostId());
             followerData.put("userName", loggedUser.getName());
             followerData.put("userPhoto", loggedUser.getPhoto());
 
-            String updatedIds = "/" + followerId + "/" + getId();
+            String updatedIds = "/" + followerId + "/" + getPostId();
             object.put("/feed" + updatedIds, followerData);
         }
 
@@ -57,13 +57,13 @@ public class PostModel implements Serializable {
 
 
 
-    public String getId() {
-        return id;
+    public String getPostId() {
+        return postId;
     }
 
     @Exclude
-    public void setId(String id) {
-        this.id = id;
+    public void setPostId(String id) {
+        this.postId = id;
     }
 
     public String getDescription() {
